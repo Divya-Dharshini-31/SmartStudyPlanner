@@ -1,22 +1,21 @@
 package com.smartstudy;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
     @Override
-    public void start(Stage primaryStage) {
-        Label label = new Label("Hello Smart Study Planner!");
-        StackPane root = new StackPane(label);
-        Scene scene = new Scene(root, 600, 400);
-
-        primaryStage.setTitle("Smart Study Planner");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    public void start(Stage stage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
+        Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add(getClass().getResource("/view/styles.css").toExternalForm());
+        stage.setTitle("Smart Study Planner");
+        stage.setScene(scene);
+        stage.setWidth(900);
+        stage.setHeight(600);
+        stage.show();
     }
 
     public static void main(String[] args) {

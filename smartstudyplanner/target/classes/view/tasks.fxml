@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane fx:controller="com.smartstudy.controller.TasksController" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox spacing="8" padding="10" prefWidth="800" prefHeight="500">
+        <HBox spacing="8">
+            <TextField fx:id="tfSearch" promptText="Search tasks..." HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnAdd" text="Add"/>
+            <Button fx:id="btnEdit" text="Edit"/>
+            <Button fx:id="btnDelete" text="Delete"/>
+            <Button fx:id="btnMark" text="Mark Done"/>
+            <Button fx:id="btnClose" text="Close"/>
+        </HBox>
+
+        <TableView fx:id="table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="colTitle" text="Title" prefWidth="250"/>
+                <TableColumn fx:id="colSubject" text="Subject" prefWidth="150"/>
+                <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="120"/>
+                <TableColumn fx:id="colEst" text="Est Hrs" prefWidth="80"/>
+                <TableColumn fx:id="colCompleted" text="Done" prefWidth="80"/>
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>
