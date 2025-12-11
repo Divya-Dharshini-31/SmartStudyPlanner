@@ -4,18 +4,22 @@
 
 <VBox spacing="10" padding="12 12 12 12" xmlns:fx="http://javafx.com/fxml/1">
     <Label text="Add / Edit Task" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+
     <HBox spacing="8">
         <Label text="Title:" prefWidth="80"/>
         <TextField fx:id="tfTitle" id="tfTitle"/>
     </HBox>
+
     <HBox spacing="8">
         <Label text="Subject:" prefWidth="80"/>
         <TextField fx:id="tfSubject" id="tfSubject"/>
     </HBox>
+
     <HBox spacing="8">
         <Label text="Deadline:" prefWidth="80"/>
         <DatePicker fx:id="dpDeadline" id="dpDeadline"/>
     </HBox>
+
     <HBox spacing="8">
         <Label text="Est Hrs:" prefWidth="80"/>
         <TextField fx:id="tfEst" id="tfEst" text="1"/>

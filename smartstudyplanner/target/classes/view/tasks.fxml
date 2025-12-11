@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+
 <AnchorPane fx:controller="com.smartstudy.controller.TasksController" xmlns:fx="http://javafx.com/fxml/1">
-    <VBox spacing="8" padding="10" prefWidth="800" prefHeight="500">
+    <VBox spacing="8" padding="10 10 10 10" prefWidth="800" prefHeight="500">
+
         <HBox spacing="8">
             <TextField fx:id="tfSearch" promptText="Search tasks..." HBox.hgrow="ALWAYS"/>
             <Button fx:id="btnAdd" text="Add"/>
@@ -22,5 +24,6 @@
                 <TableColumn fx:id="colCompleted" text="Done" prefWidth="80"/>
             </columns>
         </TableView>
+
     </VBox>
 </AnchorPane>

@@ -14,7 +14,7 @@
     </top>
 
     <center>
-        <VBox spacing="12" padding="12">
+        <VBox spacing="12" padding="12 12 12 12">
             <HBox spacing="20">
                 <VBox spacing="8">
                     <Label text="Quick Stats" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
@@ -32,13 +32,13 @@
 
                 <VBox spacing="8" prefWidth="600">
                     <Label text="Analytics" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
-                    <VBox fx:id="chartsBox" spacing="8" />
+                    <VBox fx:id="chartsBox" spacing="8"/>
                 </VBox>
             </HBox>
         </VBox>
     </center>
 
     <bottom>
-        <Label text="Made with ♥ by You" padding="8"/>
+        <Label text="Made with ♥ by You" padding="8 8 8 8"/>
     </bottom>
 </BorderPane>
