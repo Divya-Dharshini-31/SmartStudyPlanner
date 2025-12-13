@@ -6,14 +6,11 @@ import com.smartstudy.utils.ProductivityCalculator;
 import com.smartstudy.utils.ReminderService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.chart.*;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Alert;
-import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -25,28 +22,26 @@ import java.util.stream.Collectors;
 
 public class MainController {
 
-    @FXML public BorderPane rootPane;
+    @FXML private BorderPane rootPane;
     @FXML private Label lblScore;
     @FXML private Label lblStreak;
     @FXML private VBox chartsBox;
-    @FXML private Button btnAddTask;
-    @FXML private Button btnViewTasks;
 
-    private final String storagePath = System.getProperty("user.home") + "/.smartstudy_tasks.json";
+    private final String storagePath =
+            System.getProperty("user.home") + "/.smartstudy_tasks.json";
+
     private final JsonStorage storage = new JsonStorage(storagePath);
     private List<Task> tasks = new ArrayList<>();
-    private AtomicInteger idGen = new AtomicInteger(0);
+    private final AtomicInteger idGen = new AtomicInteger(0);
     private ReminderService reminderService;
 
     @FXML
     public void initialize() {
         tasks = storage.loadTasks();
-        int maxId = tasks.stream().mapToInt(Task::getId).max().orElse(0);
-        idGen.set(maxId);
+        idGen.set(tasks.stream().mapToInt(Task::getId).max().orElse(0));
         updateStats();
         buildCharts();
 
-        // Start reminder service (check every 60 seconds)
         reminderService = new ReminderService(this::getTasks);
         reminderService.startEvery(10, 60);
     }
@@ -54,27 +49,29 @@ public class MainController {
     @FXML
     private void onAddTask() {
         try {
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/view/add_task.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            AddTaskController controller = loader.getController();
             Stage dialog = new Stage();
+
+            controller.setOnTaskCreated(task -> addTaskFromDialog(task));
+            controller.setStage(dialog);
+
             dialog.initOwner(rootPane.getScene().getWindow());
             dialog.initModality(Modality.APPLICATION_MODAL);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add_task.fxml"));
-            Scene scene = new Scene(loader.load());
-            // controller will create and add task
-            Object ctrl = loader.getController();
-            if (ctrl instanceof com.smartstudy.controller.TasksController) {
-                com.smartstudy.controller.TasksController tctrl = (com.smartstudy.controller.TasksController) ctrl;
-                tctrl.setContext(this::addTaskFromDialog);
-            }
-            dialog.setScene(scene);
             dialog.setTitle("Add Task");
+            dialog.setScene(scene);
             dialog.showAndWait();
+
         } catch (IOException e) {
+            showError("Failed to open Add Task window");
             e.printStackTrace();
         }
     }
 
     private void addTaskFromDialog(Task task) {
-        // assign id
         task.setId(idGen.incrementAndGet());
         tasks.add(task);
         storage.saveTasks(tasks);
@@ -85,93 +82,82 @@ public class MainController {
     @FXML
     private void onViewTasks() {
         try {
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/view/tasks.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            TasksController controller = loader.getController();
+            controller.setTasksList(tasks);
+            controller.setOnChangeListener(this::onTasksChanged);
+
             Stage dialog = new Stage();
             dialog.initOwner(rootPane.getScene().getWindow());
             dialog.initModality(Modality.APPLICATION_MODAL);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/tasks.fxml"));
-            Scene scene = new Scene(loader.load());
-            Object ctrl = loader.getController();
-            if (ctrl instanceof com.smartstudy.controller.TasksController) {
-                com.smartstudy.controller.TasksController tctrl = (com.smartstudy.controller.TasksController) ctrl;
-                tctrl.setTasksList(tasks);
-                tctrl.setOnChangeListener(this::onTasksChanged);
-            }
-            dialog.setScene(scene);
             dialog.setTitle("All Tasks");
+            dialog.setScene(scene);
             dialog.showAndWait();
+
         } catch (IOException e) {
+            showError("Failed to open Tasks window");
             e.printStackTrace();
         }
     }
 
     private void onTasksChanged(List<Task> changed) {
-        this.tasks = changed;
+        tasks = changed;
         storage.saveTasks(tasks);
         updateStats();
         buildCharts();
     }
 
     private void updateStats() {
-        int score = ProductivityCalculator.calculateScore(tasks);
-        lblScore.setText(score + "%");
-        // simple streak calculation: current consecutive days with at least one completed task
-        int streak = calcCurrentStreak();
-        lblStreak.setText(streak + " days");
+        lblScore.setText(ProductivityCalculator.calculateScore(tasks) + "%");
+        lblStreak.setText(calcCurrentStreak() + " days");
     }
 
     private int calcCurrentStreak() {
-        // naive approach: count recent days up to today where at least 1 task completed
-        Set<LocalDate> completedDates = tasks.stream()
-                .filter(Task::isCompleted)
-                .map(t -> t.getDeadline())
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        Set<LocalDate> completed =
+                tasks.stream()
+                        .filter(Task::isCompleted)
+                        .map(Task::getDeadline)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
 
-        LocalDate d = LocalDate.now();
-        int s = 0;
-        while (completedDates.contains(d.minusDays(s))) s++;
-        return s;
+        LocalDate today = LocalDate.now();
+        int streak = 0;
+        while (completed.contains(today.minusDays(streak))) streak++;
+        return streak;
     }
 
     private void buildCharts() {
         chartsBox.getChildren().clear();
+
         if (tasks.isEmpty()) {
-            Label empty = new Label("No tasks yet. Add a task to see analytics.");
-            chartsBox.getChildren().add(empty);
+            chartsBox.getChildren().add(new Label("No tasks yet."));
             return;
         }
 
-        // Pie chart: by subject
-        Map<String, Long> bySubject = tasks.stream().collect(Collectors.groupingBy(
-                t -> t.getSubject() == null || t.getSubject().isBlank() ? "Uncategorized" : t.getSubject(),
-                Collectors.counting()
-        ));
+        Map<String, Long> bySubject =
+                tasks.stream().collect(Collectors.groupingBy(
+                        t -> t.getSubject() == null || t.getSubject().isBlank()
+                                ? "Uncategorized"
+                                : t.getSubject(),
+                        Collectors.counting()
+                ));
+
         PieChart pie = new PieChart();
         pie.setTitle("Tasks by Subject");
-        bySubject.forEach((k,v) -> pie.getData().add(new PieChart.Data(k, v)));
-        pie.setLegendVisible(false);
+        bySubject.forEach((k, v) ->
+                pie.getData().add(new PieChart.Data(k, v)));
 
-        // Bar chart: tasks completed per day (last 7 days)
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        BarChart<String, Number> bar = new BarChart<>(xAxis, yAxis);
-        bar.setTitle("Completed Tasks (last 7 days)");
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        for (int i = 6; i >= 0; i--) {
-            LocalDate day = LocalDate.now().minusDays(i);
-            long c = tasks.stream().filter(Task::isCompleted)
-                    .filter(t -> day.equals(t.getDeadline()))
-                    .count();
-            series.getData().add(new XYChart.Data<>(day.toString(), c));
-        }
-        bar.getData().add(series);
-
-        chartsBox.getChildren().addAll(pie, bar);
+        chartsBox.getChildren().add(pie);
     }
 
-    public List<Task> getTasks() { return tasks; }
+    private void showError(String msg) {
+        new Alert(Alert.AlertType.ERROR, msg, ButtonType.OK).showAndWait();
+    }
 
-    public void stopService() {
-        if (reminderService != null) reminderService.stop();
+    public List<Task> getTasks() {
+        return tasks;
     }
 }

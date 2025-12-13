@@ -1,11 +1,35 @@
 .root {
-    -fx-font-family: "Segoe UI", Arial;
+    -fx-font-family: "Segoe UI";
+}
+
+.dialog-root {
+    -fx-background-color: #ffffff;
+}
+
+.dialog-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
 }
 
 .button {
-    -fx-cursor: hand;
+    -fx-padding: 8 14;
+    -fx-background-radius: 6;
 }
 
-.table-view {
-    -fx-font-size: 13px;
+.btn-primary {
+    -fx-background-color: #4f46e5;
+    -fx-text-fill: white;
+}
+
+.btn-secondary {
+    -fx-background-color: #e5e7eb;
+}
+
+.tool-bar {
+    -fx-background-color: #111827;
+}
+
+.tool-bar .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
 }

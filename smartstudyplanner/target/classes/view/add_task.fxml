@@ -4,39 +4,34 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="10"
+<VBox spacing="12"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.smartstudy.controller.AddTaskController">
+      fx:controller="com.smartstudy.controller.AddTaskController"
+      styleClass="dialog-root">
 
     <padding>
-        <Insets top="12" right="12" bottom="12" left="12"/>
+        <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>
 
-    <Label text="Add / Edit Task"
-           style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+    <Label text="Add Task" styleClass="dialog-title"/>
 
-    <HBox spacing="8">
-        <Label text="Title:" prefWidth="80"/>
-        <TextField fx:id="tfTitle"/>
-    </HBox>
+    <GridPane hgap="10" vgap="10">
+        <Label text="Title:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="tfTitle" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-    <HBox spacing="8">
-        <Label text="Subject:" prefWidth="80"/>
-        <TextField fx:id="tfSubject"/>
-    </HBox>
+        <Label text="Subject:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="tfSubject" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-    <HBox spacing="8">
-        <Label text="Deadline:" prefWidth="80"/>
-        <DatePicker fx:id="dpDeadline"/>
-    </HBox>
+        <Label text="Deadline:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dpDeadline" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-    <HBox spacing="8">
-        <Label text="Est Hrs:" prefWidth="80"/>
-        <TextField fx:id="tfEst" text="1"/>
-    </HBox>
+        <Label text="Est. Hours:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="tfEst" text="1" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    </GridPane>
 
-    <HBox alignment="CENTER_RIGHT">
-        <Button text="Save Task" onAction="#onSaveTask"/>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#onCancel" styleClass="btn-secondary"/>
+        <Button text="Save Task" onAction="#onSaveTask" styleClass="btn-primary"/>
     </HBox>
 
 </VBox>
