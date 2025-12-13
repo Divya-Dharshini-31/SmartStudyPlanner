@@ -1,4 +1,5 @@
 com\smartstudy\controller\MainController.class
+com\smartstudy\controller\AddTaskController.class
 com\smartstudy\storage\JsonUtils$1.class
 com\smartstudy\utils\ReminderService$Supplier.class
 com\smartstudy\storage\JsonUtils.class

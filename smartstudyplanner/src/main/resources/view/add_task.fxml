@@ -1,27 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="10" padding="12 12 12 12" xmlns:fx="http://javafx.com/fxml/1">
-    <Label text="Add / Edit Task" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+<VBox spacing="10"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.smartstudy.controller.AddTaskController">
+
+    <padding>
+        <Insets top="12" right="12" bottom="12" left="12"/>
+    </padding>
+
+    <Label text="Add / Edit Task"
+           style="-fx-font-size:16px; -fx-font-weight:bold;"/>
 
     <HBox spacing="8">
         <Label text="Title:" prefWidth="80"/>
-        <TextField fx:id="tfTitle" id="tfTitle"/>
+        <TextField fx:id="tfTitle"/>
     </HBox>
 
     <HBox spacing="8">
         <Label text="Subject:" prefWidth="80"/>
-        <TextField fx:id="tfSubject" id="tfSubject"/>
+        <TextField fx:id="tfSubject"/>
     </HBox>
 
     <HBox spacing="8">
         <Label text="Deadline:" prefWidth="80"/>
-        <DatePicker fx:id="dpDeadline" id="dpDeadline"/>
+        <DatePicker fx:id="dpDeadline"/>
     </HBox>
 
     <HBox spacing="8">
         <Label text="Est Hrs:" prefWidth="80"/>
-        <TextField fx:id="tfEst" id="tfEst" text="1"/>
+        <TextField fx:id="tfEst" text="1"/>
     </HBox>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="Save Task" onAction="#onSaveTask"/>
+    </HBox>
+
 </VBox>
